@@ -1,23 +1,26 @@
-// sw.js - Service Worker for Caching
+const CACHE = 'cultura-fm-v1';
+const ASSETS = ['/', '/index.html', '/manifest.json'];
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open('static-v1').then((cache) => {
-            return cache.addAll([
-                '/',
-                '/index.html',
-                '/styles.css',
-                '/script.js',
-                // Add other files you want to cache
-            ]);
-        })
-    );
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
+  );
 });
 
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', e => {
+  // Don't cache audio streams
+  if (e.request.url.includes('fabricahost') || e.request.url.includes('postimg')) {
+    return;
+  }
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request))
+  );
 });
