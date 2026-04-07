@@ -1,0 +1,1 @@
+{\n  "name": "App Radio",\n  "short_name": "Radio",\n  "start_url": ".",\n  "display": "standalone",\n  "background_color": "#ffffff",\n  "theme_color": "#000000",\n  "icons": [\n    {\n      "src": "icon.png",\n      "sizes": "192x192",\n      "type": "image/png"\n    },\n    {\n      "src": "icon-512.png",\n      "sizes": "512x512",\n      "type": "image/png"\n    }\n  ]\n}
