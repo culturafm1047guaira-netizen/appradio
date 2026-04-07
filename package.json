@@ -1,0 +1,1 @@
+{\n  \"name\": \"appradio\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Rádio Cultura FM 104.7\",\n  \"scripts\": {\n    \"start\": \"node index.js\"\n  }\n}
