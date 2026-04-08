@@ -67,7 +67,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
+      gap: 1.4rem;
       padding: 2rem;
       text-align: center;
     }
@@ -83,18 +83,12 @@
       text-transform: uppercase;
     }
 
-    /* Logo / Play Button */
-    .logo-btn {
+    /* Logo wrapper (sem clique) */
+    .logo-wrap {
       position: relative;
       width: clamp(200px, 50vw, 280px);
       height: clamp(200px, 50vw, 280px);
       border-radius: 50%;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      outline: none;
-      -webkit-tap-highlight-color: transparent;
     }
 
     /* Pulse rings */
@@ -107,15 +101,9 @@
       pointer-events: none;
     }
 
-    .logo-btn.playing .ring:nth-child(1) {
-      animation: ring-pulse 2s ease-out infinite;
-    }
-    .logo-btn.playing .ring:nth-child(2) {
-      animation: ring-pulse 2s ease-out 0.66s infinite;
-    }
-    .logo-btn.playing .ring:nth-child(3) {
-      animation: ring-pulse 2s ease-out 1.32s infinite;
-    }
+    .playing-active .ring:nth-child(1) { animation: ring-pulse 2s ease-out infinite; }
+    .playing-active .ring:nth-child(2) { animation: ring-pulse 2s ease-out 0.66s infinite; }
+    .playing-active .ring:nth-child(3) { animation: ring-pulse 2s ease-out 1.32s infinite; }
 
     @keyframes ring-pulse {
       0%   { transform: scale(1);   opacity: 0.6; }
@@ -123,18 +111,16 @@
     }
 
     /* Glow halo */
-    .logo-btn::before {
+    .logo-wrap::before {
       content: '';
       position: absolute;
       inset: -4px;
       border-radius: 50%;
-      background: transparent;
       box-shadow: 0 0 0 0 var(--glow);
       transition: box-shadow 0.5s ease;
     }
 
-    .logo-btn:hover::before,
-    .logo-btn.playing::before {
+    .playing-active .logo-wrap::before {
       box-shadow: 0 0 40px 10px var(--glow);
     }
 
@@ -146,17 +132,11 @@
       object-fit: cover;
       display: block;
       border: 3px solid rgba(0, 84, 166, 0.5);
-      transition: transform 0.3s ease, border-color 0.3s ease, filter 0.3s ease;
-      filter: brightness(0.9);
+      transition: border-color 0.3s ease, filter 0.3s ease;
+      filter: brightness(0.95);
     }
 
-    .logo-btn:hover .logo-img {
-      transform: scale(1.04);
-      border-color: var(--blue-light);
-      filter: brightness(1.05);
-    }
-
-    .logo-btn.playing .logo-img {
+    .playing-active .logo-img {
       border-color: var(--blue-light);
       filter: brightness(1.1);
       animation: slow-pulse 3s ease-in-out infinite;
@@ -167,28 +147,69 @@
       50%       { filter: brightness(1.2); }
     }
 
-    /* Overlay icon */
-    .play-overlay {
-      position: absolute;
-      inset: 0;
+    /* Play/Pause button abaixo da logo */
+    .play-btn {
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.25);
+      background: var(--blue);
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 84, 166, 0.35);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+      box-shadow: 0 0 20px rgba(0,84,166,0.5);
     }
 
-    .logo-btn:hover .play-overlay {
-      opacity: 1;
+    .play-btn:hover {
+      background: var(--blue-light);
+      transform: scale(1.08);
+      box-shadow: 0 0 30px rgba(26,127,232,0.6);
     }
 
-    .play-overlay svg {
-      width: 52px;
-      height: 52px;
-      fill: white;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+    .play-btn:active {
+      transform: scale(0.95);
+    }
+
+    .play-btn.loading {
+      background: var(--blue-dark);
+      animation: spin-btn 1s linear infinite;
+    }
+
+    @keyframes spin-btn {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Social icons row */
+    .social-row {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    .social-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+      text-decoration: none;
+    }
+
+    .social-btn:hover {
+      background: rgba(26,127,232,0.35);
+      transform: scale(1.1);
     }
 
     /* Status text */
@@ -281,45 +302,24 @@
       z-index: 1;
     }
 
-    /* Loading spinner when buffering */
-    .logo-btn.loading .logo-img {
-      animation: none;
-    }
-
-    .logo-btn.loading::after {
-      content: '';
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      border-top-color: var(--blue-light);
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="freq-label">FM &nbsp;104.7 &nbsp;MHz</div>
 
-    <button class="logo-btn" id="playBtn" aria-label="Tocar rádio">
+    <div class="logo-wrap">
       <div class="ring"></div>
       <div class="ring"></div>
       <div class="ring"></div>
       <img
         class="logo-img"
+        id="logoImg"
         src="https://i.postimg.cc/WbzzMm6f/logo-radio-cultura.jpg"
         alt="Rádio Cultura FM 104.7"
         draggable="false"
       />
-      <div class="play-overlay" id="overlay">
-        <svg id="iconPlay" viewBox="0 0 24 24" style="display:block"><polygon points="5,3 19,12 5,21"/></svg>
-        <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-      </div>
-    </button>
+    </div>
 
     <div class="status-wrap">
       <div class="live-row">
@@ -334,9 +334,23 @@
       </div>
       <span class="status-text" id="statusText">Toque para ouvir</span>
     </div>
+
+    <button class="play-btn" id="playBtn" aria-label="Tocar rádio">
+      <svg id="iconPlay" viewBox="0 0 24 24" style="display:block;width:28px;height:28px;fill:white"><polygon points="6,3 20,12 6,21"/></svg>
+      <svg id="iconPause" viewBox="0 0 24 24" style="display:none;width:28px;height:28px;fill:white"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
+    </button>
+
+    <div class="social-row">
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook" class="social-btn">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <a href="https://instagram.com" target="_blank" aria-label="Instagram" class="social-btn">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+    </div>
   </div>
 
-  <span class="tagline">Rádio Cultura &mdash; Guaraíra</span>
+  <span class="tagline">Rádio Cultura &mdash; Guaíra</span>
 
   <audio id="audio" preload="none">
     <source src="https://ice.fabricahost.com.br/radioculturaguaira" type="audio/mpeg" />
@@ -350,12 +364,13 @@
     const eqBars    = document.getElementById('eqBars');
     const iconPlay  = document.getElementById('iconPlay');
     const iconPause = document.getElementById('iconPause');
+    const container = document.querySelector('.container');
 
     let isPlaying = false;
 
     function setPlaying(state) {
       isPlaying = state;
-      btn.classList.toggle('playing', state);
+      container.classList.toggle('playing-active', state);
       btn.classList.remove('loading');
       statusTxt.textContent = state ? 'Tocando agora...' : 'Toque para ouvir';
       statusTxt.classList.toggle('playing', state);
