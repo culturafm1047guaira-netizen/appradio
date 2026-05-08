@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@400;600;700&display=swap');
+
+@theme {
+  --color-grad-start: #F5A623;
+  --color-grad-mid: #E8304A;
+  --color-grad-end: #D81BCD;
+  --color-blue-royal: #1A3F9E;
+  --color-blue-light: #3A6FD8;
+  --color-yellow-accent: #F5C800;
+  --color-red-accent: #CC2020;
+  --color-bg-dark: #0A0A12;
+
+  --font-display: "Syne", sans-serif;
+  --font-body: "Nunito", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-dark);
+    color: white;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .glass {
+    background-color: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-grad-start), var(--color-grad-mid), var(--color-grad-end));
+    color: white;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: 9999px;
+    box-shadow: 0 10px 20px -5px rgba(232, 48, 74, 0.3);
+    transition: all 0.3s ease;
+  }
+}
+
+/* Mesh Gradient Background */
+.mesh-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color: #0A0A12;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(245, 166, 35, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(216, 27, 205, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(232, 48, 74, 0.1) 0px, transparent 50%);
+}
