@@ -10,12 +10,12 @@ const ContactIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
-  const { isPlaying, isLoading, error, metadata, togglePlay, setVolume } = useAudioStream();
+  const { isPlaying, isLoading, error, metadata, togglePlay, pause, setVolume } = useAudioStream();
 
   const renderPage = () => {
     switch (activeTab) {
-      case 'home': return <Home isPlaying={isPlaying} isLoading={isLoading} error={error} metadata={metadata} togglePlay={togglePlay} setVolume={setVolume} />;
-      case 'contact': return <Contact />;
+      case 'home': return <Home isPlaying={isPlaying} isLoading={isLoading} error={error} metadata={metadata} togglePlay={togglePlay} pause={pause} setVolume={setVolume} />;
+      case 'contact': return <Contact metadata={metadata} />;
       default: return null;
     }
   };
@@ -29,7 +29,7 @@ function App() {
     <div className="relative min-h-screen text-white flex flex-col justify-center">
       <div className="mesh-gradient" />
       
-      <main className="pb-32 pt-12 px-6 max-w-lg mx-auto w-full">
+      <main className="pb-32 pt-6 px-6 max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}

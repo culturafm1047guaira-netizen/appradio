@@ -29,7 +29,7 @@ def verify_stream(url):
         return False
 
 if __name__ == "__main__":
-    stream_url = "https://ice.fabricahost.com.br/radioculturaguaira"
+    stream_url = "https://ice-br.fabricahost.com.br/play/radioculturaguaira"
     if len(sys.argv) > 1:
         stream_url = sys.argv[1]
     

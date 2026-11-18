@@ -1,4 +1,12 @@
-export function Contact() {
+export function Contact({ metadata }) {
+  const nowPlaying = metadata?.title
+    ? [metadata.artist, metadata.title].filter(Boolean).join(' - ')
+    : '';
+  const whatsappText = `Olá, Cultura FM! Gostaria de pedir uma música.${
+    nowPlaying ? ` (Estou ouvindo: ${nowPlaying})` : ''
+  }`;
+  const whatsappUrl = `https://wa.me/551733311155?text=${encodeURIComponent(whatsappText)}`;
+
   const socialLinks = [
     { 
       label: 'Instagram', 
@@ -30,7 +38,7 @@ export function Contact() {
       <div className="space-y-4">
         {/* Botão Principal - Peça sua Música */}
         <a 
-          href="https://wa.me/551733311155" 
+          href={whatsappUrl} 
           target="_blank" 
           rel="noopener noreferrer"
           className="flex flex-col items-center justify-center gap-1 bg-[#25D366] hover:bg-[#20bd5c] text-white p-6 rounded-2xl shadow-lg shadow-green-500/20 transition-all active:scale-95 group"

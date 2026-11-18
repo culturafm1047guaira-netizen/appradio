@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSleepTimer } from '../hooks/useSleepTimer';
 
 const Visualizer = ({ isPlaying }) => {
   return (
@@ -22,17 +24,39 @@ const Visualizer = ({ isPlaying }) => {
   );
 };
 
-export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVolume }) {
+export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVolume, pause }) {
+  const [shareMsg, setShareMsg] = useState('');
+  const { minutesLeft, cycle } = useSleepTimer(pause);
+
+  const share = async () => {
+    const data = {
+      title: 'Rádio Cultura FM 104.7',
+      text: 'Ouça a Rádio Cultura FM 104.7 ao vivo!',
+      url: window.location.origin,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(data);
+      } else {
+        await navigator.clipboard.writeText(data.url);
+        setShareMsg('Link copiado!');
+        setTimeout(() => setShareMsg(''), 2500);
+      }
+    } catch {
+      // usuário cancelou o compartilhamento
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-[75vh] gap-12 py-10">
+    <div className="flex flex-col items-center justify-center gap-5 sm:gap-8 py-2 sm:py-8">
       {/* Logo com anel animado - Tamanho aumentado para preencher melhor o espaço */}
       <div className="relative">
         <motion.div
           animate={isPlaying ? { rotate: 360 } : {}}
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute -inset-6 rounded-full bg-gradient-to-tr from-grad-start via-grad-mid to-grad-end opacity-60 blur-md"
+          className="absolute -inset-4 rounded-full bg-gradient-to-tr from-grad-start via-grad-mid to-grad-end opacity-60 blur-md"
         />
-        <div className="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-8 border-white/5 shadow-2xl shadow-black/50">
+        <div className="relative z-10 w-40 h-40 sm:w-56 sm:h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-8 border-white/5 shadow-2xl shadow-black/50">
           <img 
             src="/assets/logo-cultura-fm.png" 
             alt="Logo Cultura FM" 
@@ -42,7 +66,7 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
       </div>
 
       {/* Info da Música - Espaço dedicado */}
-      <div className="text-center space-y-3 min-h-[80px] flex flex-col justify-center">
+      <div className="text-center space-y-2 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,7 +81,7 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,1)]" />
               <span className="text-xs font-black uppercase tracking-widest text-red-500">Ao Vivo</span>
             </motion.div>
-            <h1 className="font-display text-3xl md:text-4xl uppercase italic tracking-tighter leading-tight line-clamp-2 px-4 max-w-md">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl uppercase italic tracking-tighter leading-tight line-clamp-2 px-4 max-w-md">
               {metadata.title || 'Cultura FM 104.7'}
             </h1>
           </div>
@@ -71,13 +95,13 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
       </div>
 
       {/* Controles - Botão maior e espaçamento generoso */}
-      <div className="w-full max-w-sm flex flex-col items-center gap-12">
+      <div className="w-full max-w-sm flex flex-col items-center gap-5 sm:gap-8">
         <button
           onClick={togglePlay}
           disabled={isLoading}
           aria-label={isPlaying ? 'Pausar a rádio' : 'Tocar a rádio ao vivo'}
           aria-busy={isLoading}
-          className={`btn-primary w-32 h-32 flex items-center justify-center rounded-full transition-all active:scale-90 shadow-[0_20px_50px_rgba(232,48,74,0.4)] ${isLoading ? 'opacity-50 grayscale' : ''}`}
+          className={`btn-primary w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center rounded-full transition-all active:scale-90 shadow-[0_20px_50px_rgba(232,48,74,0.4)] ${isLoading ? 'opacity-50 grayscale' : ''}`}
         >
           <span className="flex flex-col items-center gap-1 text-white font-black text-sm tracking-widest" aria-hidden="true">
             {isLoading ? (
@@ -120,6 +144,24 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
             className="w-full accent-grad-mid h-1.5 bg-white/5 rounded-full appearance-none cursor-pointer hover:bg-white/10 transition-colors"
             aria-label="Ajustar volume"
           />
+        </div>
+
+        <div className="flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={cycle}
+            aria-label={minutesLeft ? `Timer para dormir: ${minutesLeft} minutos restantes. Toque para alterar` : 'Ativar timer para dormir'}
+            className={`glass px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all active:scale-95 ${minutesLeft ? 'text-grad-mid' : 'text-white/70'}`}
+          >
+            {minutesLeft ? `Dormir em ${minutesLeft} min` : 'Timer'}
+          </button>
+          <button
+            type="button"
+            onClick={share}
+            className="glass px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest text-white/70 transition-all active:scale-95"
+          >
+            {shareMsg || 'Compartilhar'}
+          </button>
         </div>
       </div>
     </div>

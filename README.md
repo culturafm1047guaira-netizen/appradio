@@ -11,14 +11,14 @@ npm install
 npm run dev      # desenvolvimento
 npm run build    # produção (dist/)
 npm run lint
+npm test         # testes (vitest)
 ```
 
 ## Configuração (`.env`)
 
 | Variável | Descrição |
 | --- | --- |
-| `VITE_STREAM_URL` | URL do stream Icecast |
-| `VITE_ICY_URL` | URL final do stream (sem redirecionamento) usada para ler o título ICY |
+| `VITE_STREAM_URL` | URL final do stream (sem redirecionamento), usada no áudio e nos metadados ICY |
 
 Se não definidas, usa os valores padrão da Cultura FM.
 
