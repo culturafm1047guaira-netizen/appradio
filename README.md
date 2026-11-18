@@ -1,16 +1,30 @@
-# React + Vite
+# Rádio Cultura FM 104.7
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PWA da Rádio Cultura FM 104.7 (Guaíra/Barretos-SP): player ao vivo com metadados da música e página de contato.
 
-Currently, two official plugins are available:
+**Stack:** React 19, Vite 8, Tailwind CSS 4, Framer Motion, vite-plugin-pwa.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Rodar
 
-## React Compiler
+```bash
+npm install
+npm run dev      # desenvolvimento
+npm run build    # produção (dist/)
+npm run lint
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Configuração (`.env`)
 
-## Expanding the ESLint configuration
+| Variável | Descrição |
+| --- | --- |
+| `VITE_STREAM_URL` | URL do stream Icecast |
+| `VITE_METADATA_URL` | `status-json.xsl` do Icecast |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Se não definidas, usa os valores padrão da Cultura FM.
+
+## Estrutura
+
+- `src/hooks/useAudioStream.js` – áudio, reconexão (5 s), rampa de volume, metadados e Media Session
+- `src/pages/` – Home (player) e Contact
+- `directives/` e `execution/` – especificações e scripts de verificação do stream
+- `_arquivo-antigo/` – arquivos legados movidos da raiz (podem ser apagados)
