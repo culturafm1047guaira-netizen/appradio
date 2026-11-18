@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { SongRequestForm } from '../components/SongRequestForm';
+
 const svg = {
   width: 24,
   height: 24,
@@ -63,10 +66,7 @@ export function Contact({ metadata }) {
   const nowPlaying = metadata?.title
     ? [metadata.artist, metadata.title].filter(Boolean).join(' - ')
     : '';
-  const whatsappText = `Olá, Cultura FM! Gostaria de pedir uma música.${
-    nowPlaying ? ` (Estou ouvindo: ${nowPlaying})` : ''
-  }`;
-  const whatsappUrl = `https://wa.me/551733311155?text=${encodeURIComponent(whatsappText)}`;
+  const [requesting, setRequesting] = useState(false);
 
   return (
     <div className="space-y-8">
@@ -75,18 +75,22 @@ export function Contact({ metadata }) {
         <p className="mt-2 text-mute">Peça sua música e participe da programação ao vivo.</p>
       </header>
 
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-4 rounded-2xl bg-[#128c4a] px-5 py-4 text-white transition-transform active:scale-[0.98]"
-      >
-        <WhatsAppIcon />
-        <span className="flex flex-col leading-tight">
-          <span className="text-lg font-bold">Pedir uma música</span>
-          <span className="text-sm opacity-90">WhatsApp (17) 3331-1155</span>
-        </span>
-      </a>
+      {requesting ? (
+        <SongRequestForm nowPlaying={nowPlaying} onCancel={() => setRequesting(false)} />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setRequesting(true)}
+          aria-expanded="false"
+          className="w-full flex items-center gap-4 rounded-2xl bg-[#128c4a] px-5 py-4 text-left text-white transition-transform active:scale-[0.98]"
+        >
+          <WhatsAppIcon />
+          <span className="flex flex-col leading-tight">
+            <span className="text-lg font-bold">Pedir uma música</span>
+            <span className="text-sm opacity-90">Preencha e envie pelo WhatsApp</span>
+          </span>
+        </button>
+      )}
 
       <section aria-labelledby="redes">
         <h2 id="redes" className="font-display text-2xl font-bold">Redes sociais</h2>
