@@ -1,0 +1,15 @@
+name: Monitor do stream
+# Falha (e o GitHub avisa por e-mail os responsáveis) se o stream da rádio sair do ar.
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install requests
+      - name: Verificar stream
+        run: python execution/verify_stream.py https://ice-br.fabricahost.com.br/play/radioculturaguaira

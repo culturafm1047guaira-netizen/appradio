@@ -27,4 +27,5 @@ Se não definidas, usa os valores padrão da Cultura FM.
 - `src/hooks/useAudioStream.js` – áudio, reconexão (5 s), rampa de volume, metadados ICY (título lido do próprio stream) e Media Session
 - `src/pages/` – Home (player) e Contact
 - `directives/` e `execution/` – especificações e scripts de verificação do stream
-- `_arquivo-antigo/` – arquivos legados movidos da raiz (podem ser apagados)
+- `.github/workflows/` – CI (lint e build) e monitor do stream a cada 30 min
+- `.env.example` – modelo de variáveis; `.env` não vai para o git

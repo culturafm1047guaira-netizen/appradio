@@ -55,13 +55,13 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
               className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 mb-2"
             >
               <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,1)]" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Ao Vivo</span>
+              <span className="text-xs font-black uppercase tracking-widest text-red-500">Ao Vivo</span>
             </motion.div>
             <h1 className="font-display text-3xl md:text-4xl uppercase italic tracking-tighter leading-tight line-clamp-2 px-4 max-w-md">
               {metadata.title || 'Cultura FM 104.7'}
             </h1>
           </div>
-          <p className="text-white/40 font-black text-xs uppercase tracking-[0.3em]">
+          <p className="text-white/65 font-black text-xs uppercase tracking-[0.3em]">
             {metadata.title ? metadata.artist : 'Guaíra / Barretos'}
           </p>
         </motion.div>
@@ -75,18 +75,28 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
         <button
           onClick={togglePlay}
           disabled={isLoading}
+          aria-label={isPlaying ? 'Pausar a rádio' : 'Tocar a rádio ao vivo'}
+          aria-busy={isLoading}
           className={`btn-primary w-32 h-32 flex items-center justify-center rounded-full transition-all active:scale-90 shadow-[0_20px_50px_rgba(232,48,74,0.4)] ${isLoading ? 'opacity-50 grayscale' : ''}`}
         >
-          <span className="text-white font-black text-sm tracking-widest">
-            {isLoading ? '...' : (isPlaying ? 'PAUSE' : 'PLAY')}
+          <span className="flex flex-col items-center gap-1 text-white font-black text-sm tracking-widest" aria-hidden="true">
+            {isLoading ? (
+              <span className="text-2xl leading-none">…</span>
+            ) : isPlaying ? (
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+            ) : (
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10-6.5a1 1 0 0 0 0-1.72l-10-6.5A1 1 0 0 0 8 5.5z" /></svg>
+            )}
+            {isLoading ? 'CARREGANDO' : isPlaying ? 'PAUSE' : 'PLAY'}
           </span>
         </button>
 
         {error && (
           <motion.p 
+            role="alert"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-red-400 text-[10px] font-black uppercase tracking-widest text-center bg-red-500/10 px-6 py-3 rounded-2xl border border-red-500/20"
+            className="text-red-400 text-xs font-black uppercase tracking-widest text-center bg-red-500/10 px-6 py-3 rounded-2xl border border-red-500/20"
           >
             {error}
           </motion.p>
@@ -94,7 +104,7 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
 
         {/* Volume - Slider mais elegante */}
         <div className="w-full flex flex-col items-center gap-3 px-10">
-          <label htmlFor="volume-slider" className="flex justify-between w-full text-[8px] font-black uppercase tracking-[0.2em] text-white/30 cursor-pointer">
+          <label htmlFor="volume-slider" className="flex justify-between w-full text-[11px] font-black uppercase tracking-[0.2em] text-white/60 cursor-pointer">
             <span>Silêncio</span>
             <span>Volume</span>
             <span>Máximo</span>

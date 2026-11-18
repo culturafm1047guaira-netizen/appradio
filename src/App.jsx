@@ -52,11 +52,11 @@ function App() {
               aria-current={activeTab === tab.id ? 'page' : undefined}
               onClick={() => setActiveTab(tab.id)}
               className={`flex flex-col items-center gap-1.5 transition-all relative ${
-                activeTab === tab.id ? 'text-grad-mid scale-110' : 'text-white/30'
+                activeTab === tab.id ? 'text-grad-mid scale-110' : 'text-white/60'
               }`}
             >
               <tab.icon />
-              <span className="text-[9px] font-black uppercase tracking-[0.2em]">{tab.label}</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.2em]">{tab.label}</span>
               {activeTab === tab.id && (
                 <motion.div 
                   layoutId="activeTabIndicator"

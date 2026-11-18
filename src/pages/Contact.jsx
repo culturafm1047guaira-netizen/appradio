@@ -24,7 +24,7 @@ export function Contact() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header>
         <h2 className="font-display text-3xl uppercase italic tracking-tighter">Contato</h2>
-        <p className="text-white/50 text-sm font-bold">Peça sua música e participe ao vivo</p>
+        <p className="text-white/70 text-sm font-bold">Peça sua música e participe ao vivo</p>
       </header>
 
       <div className="space-y-4">
@@ -35,7 +35,7 @@ export function Contact() {
           rel="noopener noreferrer"
           className="flex flex-col items-center justify-center gap-1 bg-[#25D366] hover:bg-[#20bd5c] text-white p-6 rounded-2xl shadow-lg shadow-green-500/20 transition-all active:scale-95 group"
         >
-          <span className="text-[10px] font-black tracking-[0.3em] opacity-80 uppercase">Peça sua Música</span>
+          <span className="text-xs font-black tracking-[0.3em] opacity-80 uppercase">Peça sua Música</span>
           <span className="text-xl font-display italic tracking-tighter">(17) 3331-1155</span>
         </a>
 
@@ -50,7 +50,7 @@ export function Contact() {
               className={`glass p-4 rounded-2xl flex flex-col items-center gap-2 transition-all ${link.color} active:scale-90`}
             >
               <link.icon className="w-6 h-6" />
-              <span className="text-[9px] font-black uppercase tracking-tighter">{link.label}</span>
+              <span className="text-[11px] font-black uppercase tracking-tighter">{link.label}</span>
             </a>
           ))}
         </div>
@@ -61,7 +61,7 @@ export function Contact() {
         <div className="absolute top-0 right-0 w-24 h-24 bg-grad-mid/10 blur-3xl -z-10" />
         
         <div>
-          <h4 className="font-display text-[10px] font-black uppercase tracking-[0.2em] text-grad-mid mb-2">Localização</h4>
+          <h4 className="font-display text-xs font-black uppercase tracking-[0.2em] text-grad-mid mb-2">Localização</h4>
           <p className="text-sm text-white/80 leading-relaxed font-bold">
             Av. 15, nº 225 – Centro<br />
             Guaíra - SP
@@ -70,18 +70,18 @@ export function Contact() {
 
         <div className="grid grid-cols-1 gap-4 pt-4 border-t border-white/5">
           <div>
-            <h4 className="font-display text-[10px] font-black uppercase tracking-[0.2em] text-grad-mid mb-1">WhatsApp Administrativo</h4>
+            <h4 className="font-display text-xs font-black uppercase tracking-[0.2em] text-grad-mid mb-1">WhatsApp Administrativo</h4>
             <p className="text-sm font-bold text-white/90">(17) 3331-1177</p>
           </div>
           <div>
-            <h4 className="font-display text-[10px] font-black uppercase tracking-[0.2em] text-grad-mid mb-1">E-mail</h4>
+            <h4 className="font-display text-xs font-black uppercase tracking-[0.2em] text-grad-mid mb-1">E-mail</h4>
             <p className="text-sm font-bold text-white/90 break-all">radioculturadeguaira@gmail.com</p>
           </div>
         </div>
         
         <div className="pt-4 text-center">
           <p className="text-2xl font-display text-white italic tracking-tighter">104.7 FM</p>
-          <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.3em]">Cultura FM Guaíra</p>
+          <p className="text-xs text-white/65 font-black uppercase tracking-[0.3em]">Cultura FM Guaíra</p>
         </div>
       </div>
     </div>
