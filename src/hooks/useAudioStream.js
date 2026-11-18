@@ -2,13 +2,51 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 const STREAM_URL =
   import.meta.env.VITE_STREAM_URL || 'https://ice.fabricahost.com.br/radioculturaguaira';
-const METADATA_URL =
-  import.meta.env.VITE_METADATA_URL || 'https://ice.fabricahost.com.br/status-json.xsl';
-const MOUNT_KEY = 'radioculturaguaira';
+// Endereço final (sem redirecionamento): o preflight CORS do fetch não segue redirects.
+const ICY_URL =
+  import.meta.env.VITE_ICY_URL || 'https://ice-br.fabricahost.com.br/play/radioculturaguaira';
+const METADATA_INTERVAL_MS = 15000;
+const DEFAULT_METAINT = 16000;
 
 const DEFAULT_VOLUME = 0.8;
 const RECONNECT_DELAY_MS = 5000;
 const RAMP_MS = 600;
+
+// Lê o título atual direto do stream (ICY): pede metadados, lê até o primeiro bloco e aborta.
+async function readIcyTitle(signal) {
+  const response = await fetch(ICY_URL, { headers: { 'Icy-MetaData': '1' }, signal });
+  if (!response.ok || !response.body) return '';
+  const metaInt = parseInt(response.headers.get('icy-metaint'), 10) || DEFAULT_METAINT;
+  const reader = response.body.getReader();
+
+  let buf = new Uint8Array(0);
+  const need = async (total) => {
+    while (buf.length < total) {
+      const { done, value } = await reader.read();
+      if (done) return false;
+      const next = new Uint8Array(buf.length + value.length);
+      next.set(buf);
+      next.set(value, buf.length);
+      buf = next;
+    }
+    return true;
+  };
+
+  try {
+    if (!(await need(metaInt + 1))) return '';
+    const metaLen = buf[metaInt] * 16;
+    if (metaLen === 0) return '';
+    if (!(await need(metaInt + 1 + metaLen))) return '';
+    const raw = buf.slice(metaInt + 1, metaInt + 1 + metaLen);
+    // Tenta UTF-8 e cai para latin1 se vier com caracteres inválidos
+    let text = new TextDecoder('utf-8').decode(raw);
+    if (text.includes('�')) text = new TextDecoder('latin1').decode(raw);
+    const match = text.match(/StreamTitle='(.*?)';/s);
+    return match ? match[1].trim() : '';
+  } finally {
+    reader.cancel().catch(() => {});
+  }
+}
 
 export function useAudioStream() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -139,43 +177,44 @@ export function useAudioStream() {
       navigator.mediaSession.setActionHandler('pause', pause);
     }
 
-    // Metadados (Icecast devolve objeto único ou lista em `source`)
+    // Metadados via ICY (título enviado dentro do stream)
     let cancelled = false;
+    let controller = null;
     const fetchMetadata = async () => {
+      controller?.abort();
+      controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
       try {
-        const response = await fetch(METADATA_URL);
-        if (!response.ok) return;
-        const data = await response.json();
-        let sources = data?.icestats?.source ?? [];
-        if (!Array.isArray(sources)) sources = [sources];
-        const source =
-          sources.find((s) => s?.listenurl?.includes(MOUNT_KEY)) ||
-          (sources.length === 1 ? sources[0] : null);
-        if (cancelled || !source?.title) return;
+        const raw = await readIcyTitle(controller.signal);
+        if (cancelled) return;
 
-        const idx = source.title.indexOf(' - ');
-        const artist = idx > -1 ? source.title.slice(0, idx) : '';
-        const title = idx > -1 ? source.title.slice(idx + 3) : source.title;
+        const idx = raw.indexOf(' - ');
+        const artist = idx > -1 ? raw.slice(0, idx) : '';
+        const title = idx > -1 ? raw.slice(idx + 3) : raw;
+        // Título vazio = rádio sem informação no momento (programa falado, vinheta etc.)
         setMetadata({ title, artist });
 
         if ('mediaSession' in navigator) {
           navigator.mediaSession.metadata = new MediaMetadata({
-            title,
+            title: title || 'Rádio Cultura FM 104.7',
             artist: artist || 'Ao Vivo',
-            album: 'Rádio Cultura FM 104.7',
+            album: 'Guaíra/Barretos',
             artwork: [{ src: '/assets/logo-cultura-fm.png', sizes: '512x512', type: 'image/png' }],
           });
         }
       } catch {
-        // Falha de rede/CORS: mantém o último metadado conhecido
+        // Falha de rede/CORS ou abortado: mantém o último metadado conhecido
+      } finally {
+        clearTimeout(timeout);
       }
     };
 
-    const interval = setInterval(fetchMetadata, 10000);
+    const interval = setInterval(fetchMetadata, METADATA_INTERVAL_MS);
     fetchMetadata();
 
     return () => {
       cancelled = true;
+      controller?.abort();
       wantPlayingRef.current = false;
       clearInterval(interval);
       clearTimeout(reconnectTimerRef.current);

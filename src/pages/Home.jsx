@@ -43,36 +43,28 @@ export function Home({ isPlaying, isLoading, error, metadata, togglePlay, setVol
 
       {/* Info da Música - Espaço dedicado */}
       <div className="text-center space-y-3 min-h-[80px] flex flex-col justify-center">
-        {metadata.title ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-1"
-          >
-            <div className="flex flex-col items-center gap-2">
-              <motion.div 
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 mb-2"
-              >
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,1)]" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Ao Vivo</span>
-              </motion.div>
-              <h1 className="font-display text-3xl md:text-4xl uppercase italic tracking-tighter leading-tight line-clamp-2 px-4 max-w-md">
-                {metadata.title}
-              </h1>
-            </div>
-            <p className="text-white/40 font-black text-xs uppercase tracking-[0.3em]">
-              {metadata.artist}
-            </p>
-          </motion.div>
-        ) : (
-          <div className="h-full flex items-center justify-center">
-            <p className="text-white/20 font-black text-[10px] uppercase tracking-[0.5em] animate-pulse">
-              Aguardando sinal...
-            </p>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-1"
+        >
+          <div className="flex flex-col items-center gap-2">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 mb-2"
+            >
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,1)]" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Ao Vivo</span>
+            </motion.div>
+            <h1 className="font-display text-3xl md:text-4xl uppercase italic tracking-tighter leading-tight line-clamp-2 px-4 max-w-md">
+              {metadata.title || 'Cultura FM 104.7'}
+            </h1>
           </div>
-        )}
+          <p className="text-white/40 font-black text-xs uppercase tracking-[0.3em]">
+            {metadata.title ? metadata.artist : 'Guaíra / Barretos'}
+          </p>
+        </motion.div>
         <div className="flex justify-center mt-4">
           <Visualizer isPlaying={isPlaying && !isLoading} />
         </div>

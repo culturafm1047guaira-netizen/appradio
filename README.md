@@ -18,13 +18,13 @@ npm run lint
 | Variável | Descrição |
 | --- | --- |
 | `VITE_STREAM_URL` | URL do stream Icecast |
-| `VITE_METADATA_URL` | `status-json.xsl` do Icecast |
+| `VITE_ICY_URL` | URL final do stream (sem redirecionamento) usada para ler o título ICY |
 
 Se não definidas, usa os valores padrão da Cultura FM.
 
 ## Estrutura
 
-- `src/hooks/useAudioStream.js` – áudio, reconexão (5 s), rampa de volume, metadados e Media Session
+- `src/hooks/useAudioStream.js` – áudio, reconexão (5 s), rampa de volume, metadados ICY (título lido do próprio stream) e Media Session
 - `src/pages/` – Home (player) e Contact
 - `directives/` e `execution/` – especificações e scripts de verificação do stream
 - `_arquivo-antigo/` – arquivos legados movidos da raiz (podem ser apagados)
